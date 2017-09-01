@@ -3,14 +3,31 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
+class PathQuickPickItem implements vscode.QuickPickItem {
+
+    constructor(uri: vscode.Uri) {
+
+        let index = uri.fsPath.lastIndexOf("\\project.clj");
+        let pathToProjectFile = uri.fsPath.substring(0, index);
+        index = pathToProjectFile.lastIndexOf("\\") + 1;
+        this.label = pathToProjectFile.substring(index);
+        this.description =  pathToProjectFile;
+    }
+
+    public label: string;
+
+    public description: string;
+
+    toString(): string {
+        return this.label;
+    }
+}
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-    let terminal = vscode.window.createTerminal("clojure");
-    terminal.sendText("lein repl");
-    const clojure = { repl: terminal };
-    terminal.show();
+    const clojure = { repl: null }; 
 
     function readNamespace() {
         let editor = vscode.window.activeTextEditor;
@@ -108,11 +125,41 @@ export function activate(context: vscode.ExtensionContext) {
         return editor.document.getText(editor.selection);
     }
 
-    const clojureStart = vscode.commands.registerCommand('clojure.start', () => {
+    function getProjects() {
 
+        let projectsPaths = vscode.workspace.findFiles("**/project.clj");
+        return projectsPaths.then(uris => {
+            if(uris == null) {
+                vscode.window.showWarningMessage("No project.clj was found");
+                return;
+            }
+
+            return uris.map(uri => {
+                return new PathQuickPickItem(uri);
+            });
+        });
+    }
+
+    function startRepl(selection: PathQuickPickItem) {
         clojure.repl = vscode.window.createTerminal("clojure");
+        clojure.repl.sendText(`cd "${selection.description}"`);
         clojure.repl.sendText("lein repl");
         clojure.repl.show();
+    }
+
+    const clojureStart = vscode.commands.registerCommand('clojure.start', () => {
+
+        getProjects().then(projects=>{
+            if(projects.length === 0)
+                return;
+
+            if(projects.length === 1) {
+                startRepl(projects[0]); 
+            } else {
+                let selectionTask = vscode.window.showQuickPick(projects);
+                selectionTask.then(startRepl);
+            }                        
+        });
     });
 
     const printCurrentNamespace = vscode.commands.registerCommand('clojure.namespace.print', () => {
@@ -141,32 +188,27 @@ export function activate(context: vscode.ExtensionContext) {
         clojure.repl.sendText("(clojure.tools.namespace.repl/refresh-all)");
     });
 
-    const evalScope = vscode.commands.registerCommand('clojure.eval', () => {
+    const evalScope = vscode.commands.registerCommand('clojure.eval', () => {        
         
-        try
-        {
-            let editor = vscode.window.activeTextEditor;
-            if(!editor || editor.document.lineCount === 0) 
-                return;
-            
-            let command = getSelectedText(editor);
-            if(command == null)
-                command = getCommandInScope(editor);
+        let editor = vscode.window.activeTextEditor;
+        if(!editor || editor.document.lineCount === 0) 
+            return;
+        
+        let command = getSelectedText(editor);
+        if(command == null)
+            command = getCommandInScope(editor);
 
-            if(command != null)
-                console.log(command);
-        }
-        catch(e) {
-            console.log(e);
-        }
+        if(command != null)
+            console.log(command);
     });
+         
 
     context.subscriptions.push(clojureStart);
     context.subscriptions.push(printCurrentNamespace);
     context.subscriptions.push(loadClojureFile);
     context.subscriptions.push(moveClojureNamespace);
     context.subscriptions.push(refreshAll);
-    context.subscriptions.push(evalScope);
+    context.subscriptions.push(evalScope);    
 }
 
 // this method is called when your extension is deactivated

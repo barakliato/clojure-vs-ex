@@ -14,11 +14,11 @@
         "*"
     ],
     "main": "./out/src/extension",
-    "contributes": {
+    "contributes": { 
         "commands": [
             {
                 "command": "clojure.start",
-                "title": "clojure start"
+                "title": "clojure start repl"
             },
             {
                 "command": "clojure.namespace.print",
@@ -39,7 +39,7 @@
             {
                 "command": "clojure.eval",
                 "title": "clojure eval"
-            }
+            }            
         ]
     },
     "scripts": {

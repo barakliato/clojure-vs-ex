@@ -19,6 +19,8 @@ Add several commands to help using the integrated terminal
 
 6) clojure eval - if a text was selecetd in the open editor then it will be executed otherwise check if the cursor is inside a scope (inside parentheses) and execute the command in the scope.
 
+7) clojure run tests - execute (run-tests)
+
 ## Requirements
 
 Only one dependency; Leiningen - go to https://leiningen.org/ 

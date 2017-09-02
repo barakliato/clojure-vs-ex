@@ -209,13 +209,38 @@ export function activate(context: vscode.ExtensionContext) {
         clojure.repl.sendText("(run-tests)");
     });
 
+    const requireTrace = vscode.commands.registerCommand('clojure.trace.require', ()=> {
+
+        clojure.repl.sendText("(use 'clojure.tools.trace)");
+    });
+
+    const enableTraceOnCurrentNamespace = vscode.commands.registerCommand('clojure.trace.namespace', ()=> {
+
+        clojure.repl.sendText("(trace-ns *ns*)");
+    });
+
+    const disableTraceOnCurrentNamespace = vscode.commands.registerCommand('clojure.trace.namespace', ()=> {
+        
+        clojure.repl.sendText("(untrace-ns *ns*)");
+    });
+
+    const wrapInTrace = vscode.commands.registerCommand('clojure.trace.wrap', ()=> {
+        
+        
+    });
+
     context.subscriptions.push(clojureStart);
     context.subscriptions.push(printCurrentNamespace);
     context.subscriptions.push(loadClojureFile);
     context.subscriptions.push(moveClojureNamespace);
     context.subscriptions.push(refreshAll);
-    context.subscriptions.push(evalScope);    
+    context.subscriptions.push(evalScope);
     context.subscriptions.push(runTests);    
+    //for version 2
+    context.subscriptions.push(requireTrace);
+    context.subscriptions.push(enableTraceOnCurrentNamespace);
+    context.subscriptions.push(disableTraceOnCurrentNamespace);
+
 }
 
 // this method is called when your extension is deactivated

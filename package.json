@@ -2,8 +2,8 @@
     "name": "terminal-clojure",
     "displayName": "terminal-clojure",
     "description": "send clojure commands directly to the terminal",
-    "version": "0.0.1",
-    "publisher": "barak",
+    "version": "1.1.0",
+    "publisher": "barakliato",
     "engines": {
         "vscode": "^1.15.0"
     },
@@ -39,6 +39,10 @@
             {
                 "command": "clojure.eval",
                 "title": "clojure eval"
+            },
+            {
+                "command": "clojure.run.tests",
+                "title": "clojure run tests"
             }            
         ]
     },

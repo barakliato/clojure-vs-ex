@@ -204,7 +204,7 @@ export function activate(context: vscode.ExtensionContext) {
             clojure.repl.sendText(command);
     });
          
-    const runTests = vscode.commands.registerCommand('clojure run tests', ()=> {
+    const runTests = vscode.commands.registerCommand('clojure.run.tests', ()=> {
 
         clojure.repl.sendText("(run-tests)");
     });
@@ -215,6 +215,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(moveClojureNamespace);
     context.subscriptions.push(refreshAll);
     context.subscriptions.push(evalScope);    
+    context.subscriptions.push(runTests);    
 }
 
 // this method is called when your extension is deactivated

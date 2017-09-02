@@ -1,8 +1,7 @@
 # terminal-clojure README
 
 This extension allow to work with clojure using vscode integrated terminal.
-The extension does not provide syntax highlite, paraedit, parinfer or autocomplete, there is other extensions that provide it
-and they can be used together.
+The extension does not provide syntax highlite, paraedit, parinfer or autocomplete, there is other extensions that provide it and they can be used together.
 
 ## Features
 

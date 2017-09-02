@@ -12,9 +12,9 @@ Add several commands to help using the integrated terminal
 
 2) clojure print namespace - execute (ns-name *ns*) which display the current namespace
 
-3) clojure require namespace - execute (require '<open editor namespace> :reload) which sould reload the current file
+3) clojure require namespace - execute (require '[open editor namespace] :reload) which sould reload the current file
 
-4) clojure move to current namespace - execute (in-ns '<open editor namespace>) which move to the current file namespace
+4) clojure move to current namespace - execute (in-ns '[open editor namespace]) which move to the current file namespace
 
 5) clojure refresh all - execute two commands. The first command is (require 'clojure.tools.namespace.repl) and the second one is (clojure.tools.namespace.repl/refresh-all)
 

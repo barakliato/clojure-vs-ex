@@ -4,32 +4,27 @@ This is the README for your extension "terminal-clojure". After writing up a bri
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Add several commands to help using the integrated terminal
 
-For example if there is an image subfolder under your extension project workspace:
+1) clojure start repl - Search for project.clj files under the open workspace folder and let you choose the project to start a repl (has a 5 seconds timeout)
 
-\!\[feature X\]\(images/feature-x.png\)
+2) clojure print namespace - execute (ns-name *ns*) which display the current namespace
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+3) clojure require namespace - execute (require '<open editor namespace> :reload) which sould reload the current file
+
+4) clojure move to current namespace - execute (in-ns '<open editor namespace>) which move to the current file namespace
+
+5) clojure refresh all - execute two commands. The first command is (require 'clojure.tools.namespace.repl) and the second one is (clojure.tools.namespace.repl/refresh-all)
+
+6) clojure eval - if a text was selecetd in the open editor then it will be executed otherwise check if the cursor is inside a scope (inside parentheses) and execute the command in the scope.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Only one dependency; Leiningen - go to https://leiningen.org/ 
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
 ## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
 
 ## Release Notes
 

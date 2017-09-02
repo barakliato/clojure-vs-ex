@@ -202,6 +202,10 @@ export function activate(context: vscode.ExtensionContext) {
             console.log(command);
     });
          
+    const runTests = vscode.commands.registerCommand('clojure run tests', ()=> {
+
+        clojure.repl.sendText("(run-tests)");
+    });
 
     context.subscriptions.push(clojureStart);
     context.subscriptions.push(printCurrentNamespace);

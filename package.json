@@ -43,7 +43,25 @@
             {
                 "command": "clojure.run.tests",
                 "title": "clojure run tests"
-            }            
+            },
+
+
+            {
+                "command": "clojure.trace.require",
+                "title": "clojure require trace"
+            },
+            {
+                "command": "clojure.trace.namespace",
+                "title": "clojure trace namespace"
+            },
+            {
+                "command": "clojure.untrace.namespace",
+                "title": "clojure untrace namespace"
+            },
+            {
+                "command": "clojure.trace.wrap",
+                "title": "clojure trace"
+            }
         ]
     },
     "scripts": {

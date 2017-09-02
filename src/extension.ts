@@ -56,11 +56,14 @@ export function activate(context: vscode.ExtensionContext) {
         }
     }
 
-    function getScopeStart(editor: vscode.TextEditor) {
+    function getTextUpToCursor(editor: vscode.TextEditor) {
         var startPosition = new vscode.Position(0, 0);
         let range = new vscode.Range(startPosition, editor.selection.active);
-        let text = editor.document.getText(range);        
-        
+        return editor.document.getText(range);
+    }
+
+    function getScopeStartIndex(text: string) {
+
         let startIndex = -1;
         let parenthesesCount = 0;
         for(let i = text.length; i > -1 && startIndex < 0; i--) {
@@ -74,6 +77,14 @@ export function activate(context: vscode.ExtensionContext) {
             if(text[i] === ")")
                 parenthesesCount++;
         }
+
+        return startIndex;
+    }
+    
+    function getScopeStart(editor: vscode.TextEditor) {
+
+        let text = getTextUpToCursor(editor);
+        let startIndex = getScopeStartIndex(text);
 
         return startIndex === -1
                ? null
@@ -219,14 +230,44 @@ export function activate(context: vscode.ExtensionContext) {
         clojure.repl.sendText("(trace-ns *ns*)");
     });
 
-    const disableTraceOnCurrentNamespace = vscode.commands.registerCommand('clojure.trace.namespace', ()=> {
+    const disableTraceOnCurrentNamespace = vscode.commands.registerCommand('clojure.untrace.namespace', ()=> {
         
         clojure.repl.sendText("(untrace-ns *ns*)");
     });
-
+    
     const wrapInTrace = vscode.commands.registerCommand('clojure.trace.wrap', ()=> {
+
+        let editor = vscode.window.activeTextEditor;
+        if(!editor)
+            return;
+                
+        let lineNumber = editor.selection.active.line;
+        let commandLine = editor.document.lineAt(lineNumber);
+        let text = commandLine.text.trim();
+        if(text.startsWith("(defn")) {
+
+            editor.edit(builder=> {
+                let textToReplaceRange = new vscode.Range(lineNumber, 
+                                                     commandLine.firstNonWhitespaceCharacterIndex,
+                                                     lineNumber,
+                                                     commandLine.firstNonWhitespaceCharacterIndex + 5);
+                builder.replace(textToReplaceRange, "(deftrace");
+                return true;
+            });                    
+        } else if(text.startsWith("(do")) {
         
+            editor.edit(builder=> {
+                let textToReplaceRange = new vscode.Range(lineNumber, 
+                                                     commandLine.firstNonWhitespaceCharacterIndex,
+                                                     lineNumber,
+                                                     commandLine.firstNonWhitespaceCharacterIndex + 3);
+                builder.replace(textToReplaceRange, "(trace-forms");
+                return true;
+            });
+        }
+        else if(text.startsWith("(fn")) {
         
+        }         
     });
 
     context.subscriptions.push(clojureStart);
@@ -235,11 +276,12 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(moveClojureNamespace);
     context.subscriptions.push(refreshAll);
     context.subscriptions.push(evalScope);
-    context.subscriptions.push(runTests);    
-    //for version 2
+    context.subscriptions.push(runTests);
+    
     context.subscriptions.push(requireTrace);
     context.subscriptions.push(enableTraceOnCurrentNamespace);
     context.subscriptions.push(disableTraceOnCurrentNamespace);
+    context.subscriptions.push(wrapInTrace);
 
 }
 

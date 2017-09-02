@@ -127,12 +127,12 @@ export function activate(context: vscode.ExtensionContext) {
 
     function getProjects() {
 
-        let projectsPaths = vscode.workspace.findFiles("**/project.clj");
+        let cancellationTokenSource: vscode.CancellationTokenSource = new vscode.CancellationTokenSource();
+        let projectsPaths = vscode.workspace.findFiles("**/project.clj", null, null, cancellationTokenSource.token);
+        setTimeout(()=>{ cancellationTokenSource.cancel(); }, 5000);
         return projectsPaths.then(uris => {
-            if(uris == null) {
-                vscode.window.showWarningMessage("No project.clj was found");
+            if(uris == null)
                 return;
-            }
 
             return uris.map(uri => {
                 return new PathQuickPickItem(uri);
@@ -149,23 +149,25 @@ export function activate(context: vscode.ExtensionContext) {
 
     const clojureStart = vscode.commands.registerCommand('clojure.start', () => {
 
-        getProjects().then(projects=>{
-            if(projects.length === 0)
+        vscode.window.showInformationMessage("Searching for project files");
+        getProjects().then(projects => {
+            if(projects == null || projects.length === 0) {
+                vscode.window.showWarningMessage("No project.clj was found");
                 return;
+            }
 
             if(projects.length === 1) {
                 startRepl(projects[0]); 
             } else {
                 let selectionTask = vscode.window.showQuickPick(projects);
                 selectionTask.then(startRepl);
-            }                        
+            }
         });
     });
 
     const printCurrentNamespace = vscode.commands.registerCommand('clojure.namespace.print', () => {
 
         clojure.repl.sendText("(ns-name *ns*)");
-        clojure.repl.show();
     });
 
     const loadClojureFile = vscode.commands.registerCommand('clojure.namespace.load', () => {
@@ -189,7 +191,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     const evalScope = vscode.commands.registerCommand('clojure.eval', () => {        
-        
+                
         let editor = vscode.window.activeTextEditor;
         if(!editor || editor.document.lineCount === 0) 
             return;
@@ -199,7 +201,7 @@ export function activate(context: vscode.ExtensionContext) {
             command = getCommandInScope(editor);
 
         if(command != null)
-            console.log(command);
+            clojure.repl.sendText(command);
     });
          
     const runTests = vscode.commands.registerCommand('clojure run tests', ()=> {

@@ -21,6 +21,10 @@
                 "title": "clojure start repl"
             },
             {
+                "command": "clojure.debugger.load",
+                "title": "clojure load debugger"
+            },
+            {
                 "command": "clojure.namespace.print",
                 "title": "clojure print namespace"
             },
@@ -44,23 +48,13 @@
                 "command": "clojure.run.tests",
                 "title": "clojure run tests"
             },
-
-
             {
-                "command": "clojure.trace.require",
-                "title": "clojure require trace"
+                "command": "clojure.debugger.breakpoint",
+                "title": "clojure set breakpoint"
             },
             {
-                "command": "clojure.trace.namespace",
-                "title": "clojure trace namespace"
-            },
-            {
-                "command": "clojure.untrace.namespace",
-                "title": "clojure untrace namespace"
-            },
-            {
-                "command": "clojure.trace.wrap",
-                "title": "clojure trace"
+                "command": "clojure.debugger.resume",
+                "title": "clojure resume debugging"
             }
         ]
     },
